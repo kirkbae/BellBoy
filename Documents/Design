@@ -1,0 +1,26 @@
+Timer:
+- Is there a need to separate the timers out? 
+	- no
+
+- Why did I create separate timers?
+	- to better group them?
+	- what issues did this cause?
+	- chaining. 
+	- why am I attracted to this idea?
+		- abstraction
+		- CountDownTimer does exactly what I need to do and handles the logic for me.
+		- Why duplicate the logic. Let CountDownTimer handle it for me.
+	- What is the issue?
+		- 
+
+
+Model:
+
+- Session
+	- has rounds
+
+- Round
+- Break
+
+- Round
+- Break
