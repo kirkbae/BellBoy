@@ -6,6 +6,7 @@ import android.os.CountDownTimer;
  * Created by kirk on 20/05/16.
  */
 public class BellBoy {
+    private static final long COUNTDOWNTIMER_BUFFER = 500;
     private Configuration mConfiguration;
     private IEvents mEvents;
     private int mCurrentRound = 0;
@@ -31,14 +32,17 @@ public class BellBoy {
         ++mCurrentRound;
         mEvents.onStartRound(mCurrentRound);
 
-        return new CountDownTimer(mConfiguration.getRoundDurationInSeconds() * 1000, 1000) {
+        return new CountDownTimer(mConfiguration.getRoundDurationInSeconds() * 1000 + COUNTDOWNTIMER_BUFFER, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                //mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
-                int secondsRemaininig = (int) (millisUntilFinished / 1000);
-                mCurrentRoundSecond = mConfiguration.getRoundDurationInSeconds() - secondsRemaininig;
+                int secondsUntilFinished = (int)Math.ceil(millisUntilFinished / 1000);
 
-                if (secondsRemaininig == mConfiguration.getNSecondsBeforeRoundEnd()) {
+                System.out.println("onTick " + millisUntilFinished);
+                System.out.println("onTick seconds " + secondsUntilFinished);
+                mEvents.onRoundTick(secondsUntilFinished);
+                mCurrentRoundSecond = mConfiguration.getRoundDurationInSeconds() - secondsUntilFinished;
+
+                if (secondsUntilFinished == mConfiguration.getNSecondsBeforeRoundEnd()) {
                     mEvents.onNSecondsBeforeEndRound(mCurrentRoundSecond);
                 }
             }
@@ -62,10 +66,11 @@ public class BellBoy {
     {
         mEvents.onStartBreak();
 
-        return new CountDownTimer(mConfiguration.getBreakDurationInSeconds() * 1000, 1000) {
+        return new CountDownTimer(mConfiguration.getBreakDurationInSeconds() * 1000 + COUNTDOWNTIMER_BUFFER, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                //mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
+                int secondsUntilFinished = (int)Math.ceil(millisUntilFinished / 1000);
+                mEvents.onBreakTick(secondsUntilFinished);
             }
             @Override
             public void onFinish() {
@@ -74,32 +79,4 @@ public class BellBoy {
             }
         }.start();
     }
-
-
-    /*
-    @Override
-    public void onTick(long millisUntilFinished) {
-        //mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
-        int secondsRemaininig = (int) (millisUntilFinished / 1000);
-        if (secondsRemaininig == mConfiguration.getNSecondsBeforeRoundEnd()) {
-            mEvents.onNSecondsBeforeEndRound();
-        }
-        mCurrentSecond = mConfiguration.getRoundDurationInSeconds() - secondsRemaininig;
-    }
-
-    @Override
-    public void onFinish() {
-        mEvents.onEndRound();
-
-        if (mCurrentRound == mConfiguration.getNumRounds())
-        {
-            mEvents.onEnd();
-        }
-        else
-        {
-            mBreakCountDownTimer = startBreakCountDownTimer();
-            mBreakCountDownTimer.start();
-        }
-    }
-    */
 }

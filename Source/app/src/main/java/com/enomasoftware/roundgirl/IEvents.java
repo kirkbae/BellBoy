@@ -8,9 +8,12 @@ public interface IEvents {
     void onEnd();
 
     void onStartRound(int currentRound);
+    void onRoundTick(int secondsUntilFinished);
     void onNSecondsBeforeEndRound(int currentSecond);
     void onEndRound(int currentRound);
 
     void onStartBreak();
+    void onBreakTick(int secondsUntilFinished);
     void onEndBreak();
+
 }

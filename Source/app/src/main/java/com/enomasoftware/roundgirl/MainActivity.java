@@ -2,9 +2,9 @@ package com.enomasoftware.roundgirl;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-
     private Configuration mConfiguration = null;
     private IEvents mEvents = null;
     private BellBoy mBellBoy = null;
@@ -19,6 +19,11 @@ public class MainActivity extends AppCompatActivity {
         mBellBoy = buildBellBoy(mConfiguration, mEvents);
 
         mBellBoy.start();
+    }
+
+    private void UpdateText(String text) {
+        TextView textView = (TextView) this.findViewById(R.id.txtMain);
+        textView.setText(text.toString());
     }
 
     private Configuration buildConfiguration() {
@@ -42,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("onStartRound called. Current round is " + currentRound);
             }
             @Override
+            public void onRoundTick(int secondsUntilFinished) {
+                UpdateText(String.valueOf(secondsUntilFinished));
+            }
+            @Override
             public void onNSecondsBeforeEndRound(int currentSecond) {
                 System.out.println("onNSecondsBeforeEndRound called. Current second is " + currentSecond);
             }
@@ -53,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
             public void onStartBreak()
             {
                 System.out.println("onStartBreak called.");
+            }
+            @Override
+            public void onBreakTick(int secondsUntilFinished) {
+
             }
             @Override
             public void onEndBreak()
