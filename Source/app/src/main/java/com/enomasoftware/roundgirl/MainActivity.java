@@ -1,7 +1,11 @@
 package com.enomasoftware.roundgirl;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -13,7 +17,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
 
+    public void btnStart_onClick(View view) {
         mConfiguration = buildConfiguration();
         mEvents = buildEvents();
         mBellBoy = buildBellBoy(mConfiguration, mEvents);
@@ -27,7 +33,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Configuration buildConfiguration() {
-        return new Configuration(3, 10, 3, 5);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String numRoundsStr = sharedPref.getString("num_rounds", "12");
+        int numRounds = Integer.parseInt(numRoundsStr);
+        String roundDurationStr = sharedPref.getString("round_duration", "180");
+        int roundDuration = Integer.parseInt(roundDurationStr);
+        String breakDurtaionStr = sharedPref.getString("break_duration", "60");
+        int breakDurtaion = Integer.parseInt(breakDurtaionStr);
+
+        return new Configuration(numRounds, roundDuration, 10, breakDurtaion);
     }
 
     private IEvents buildEvents() {
@@ -65,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onBreakTick(int secondsUntilFinished) {
+                UpdateText(String.valueOf(secondsUntilFinished));
 
             }
             @Override
