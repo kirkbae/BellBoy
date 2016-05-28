@@ -6,12 +6,16 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+
+import com.enomasoftware.roundgirl.States.StateContext;
 
 public class MainActivity extends AppCompatActivity {
     private Configuration mConfiguration = null;
-    private IEvents mEvents = null;
     private BellBoy mBellBoy = null;
+
+    private StateContext mStateContext = new StateContext(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,15 +25,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void btnStart_onClick(View view) {
         mConfiguration = buildConfiguration();
-        mEvents = buildEvents();
-        mBellBoy = buildBellBoy(mConfiguration, mEvents);
+        mBellBoy = buildBellBoy(mConfiguration, mStateContext);
 
         mBellBoy.start();
     }
 
-    private void UpdateText(String text) {
+    public void UpdateText(String text) {
         TextView textView = (TextView) this.findViewById(R.id.txtMain);
         textView.setText(text.toString());
+    }
+
+    public void setStartButtonEnabled(boolean enabled) {
+        Button btn = (Button) this.findViewById(R.id.btnStart);
+        btn.setEnabled(enabled);
     }
 
     private Configuration buildConfiguration() {
@@ -43,52 +51,6 @@ public class MainActivity extends AppCompatActivity {
         int breakDurtaion = Integer.parseInt(breakDurtaionStr);
 
         return new Configuration(numRounds, roundDuration, 10, breakDurtaion);
-    }
-
-    private IEvents buildEvents() {
-        return new IEvents() {
-            @Override
-            public void onStart()
-            {
-                System.out.println("onStart called.");
-            }
-            @Override
-            public void onEnd()
-            {
-                System.out.println("onEnd called.");
-            }
-            @Override
-            public void onStartRound(int currentRound) {
-                System.out.println("onStartRound called. Current round is " + currentRound);
-            }
-            @Override
-            public void onRoundTick(int secondsUntilFinished) {
-                UpdateText(String.valueOf(secondsUntilFinished));
-            }
-            @Override
-            public void onNSecondsBeforeEndRound(int currentSecond) {
-                System.out.println("onNSecondsBeforeEndRound called. Current second is " + currentSecond);
-            }
-            @Override
-            public void onEndRound(int currentRound) {
-                System.out.println("onEndRound called. Current round is " + currentRound);
-            }
-            @Override
-            public void onStartBreak()
-            {
-                System.out.println("onStartBreak called.");
-            }
-            @Override
-            public void onBreakTick(int secondsUntilFinished) {
-                UpdateText(String.valueOf(secondsUntilFinished));
-
-            }
-            @Override
-            public void onEndBreak()
-            {
-                System.out.println("onEndBreak called.");
-            }
-        };
     }
 
     private BellBoy buildBellBoy(Configuration configuration, IEvents events) {
