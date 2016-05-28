@@ -18,6 +18,7 @@ public class StateContext implements IEvents {
     private StartBreakState mStartBreakState = new StartBreakState();
     private BreakState mBreakState = new BreakState();
     private EndBreakState mEndBreakState = new EndBreakState();
+    private EndSessionState mEndSessionState = new EndSessionState();
 
     public StateContext(MainActivity mainActivity) {
         mMainActivity = mainActivity;
@@ -36,7 +37,7 @@ public class StateContext implements IEvents {
 
     @Override
     public void onEnd() {
-        System.out.println("onEnd called.");
+        setState(mEndSessionState, null);
     }
 
     @Override
