@@ -11,12 +11,6 @@ import java.util.Date;
 public class RoundState implements IState {
     @Override
     public void render(MainActivity mainActivity, Object data) {
-        Integer secondsUntilFinished = (Integer)data;
-        Date date = new Date(secondsUntilFinished * 1000);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
-        String formattedDate = dateFormat.format(date);
-
-        mainActivity.UpdateText(formattedDate);
+        mainActivity.UpdateTime((int)data);
     }
 }

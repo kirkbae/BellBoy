@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.enomasoftware.roundgirl.States.StateContext;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity {
     private Configuration mConfiguration = null;
     private BellBoy mBellBoy = null;
@@ -33,6 +36,15 @@ public class MainActivity extends AppCompatActivity {
     public void UpdateText(String text) {
         TextView textView = (TextView) this.findViewById(R.id.txtMain);
         textView.setText(text.toString());
+    }
+
+    public void UpdateTime(int secondsUntilFinished) {
+        Date date = new Date(secondsUntilFinished * 1000);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
+        String formattedDate = dateFormat.format(date);
+
+        UpdateText(formattedDate);
     }
 
     public void setStartButtonEnabled(boolean enabled) {

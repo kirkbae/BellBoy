@@ -11,13 +11,6 @@ import java.util.Date;
 public class BreakState implements IState {
     @Override
     public void render(MainActivity mainActivity, Object data) {
-        // Todo: duplicate code with RoundState. Refactor.
-        Integer secondsUntilFinished = (Integer)data;
-        Date date = new Date(secondsUntilFinished * 1000);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
-        String formattedDate = dateFormat.format(date);
-
-        mainActivity.UpdateText(formattedDate);
+        mainActivity.UpdateTime((int)data);
     }
 }
