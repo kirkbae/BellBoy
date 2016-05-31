@@ -10,9 +10,13 @@ import com.enomasoftware.roundgirl.IEvents;
  */
 public class BellBoy {
     private static final long COUNTDOWNTIMER_BUFFER = 500;
+
+    public Configuration getConfiguration() {
+        return mConfiguration;
+    }
     private Configuration mConfiguration;
+
     private IEvents mEvents;
-    private boolean mHasStarted = false;
     private int mCurrentRound = 0;
     // This may need to be thread safe.
     private int mCurrentRoundSecond = 0;
@@ -21,20 +25,36 @@ public class BellBoy {
     private CountDownTimer mRoundCountDownTimer = null;
     private CountDownTimer mBreakCountDownTimer = null;
 
+    public IBellBoyState getPrevBellBoyState() {
+        return mPrevBellBoyState;
+    }
+    private IBellBoyState mPrevBellBoyState = null;
+    private IBellBoyState mBellBoyState = null;
+
     public BellBoy(Configuration configuration, IEvents events) {
         mConfiguration = configuration;
         mEvents = events;
+        setState(new PausedState(this));
     }
 
     public void start() {
-        mHasStarted = true;
+        mBellBoyState.start();
+    }
+
+    public void onStart() {
+        mEvents.onStart();
+
+        ++mCurrentRound;
+        mEvents.onStartRound(mCurrentRound);
         mRoundCountDownTimer = buildRoundCountDownTimer(mConfiguration.getRoundDurationInSeconds());
         mRoundCountDownTimer.start();
     }
 
     public void pause() {
-        mHasStarted = false;
+        mBellBoyState.pause();
+    }
 
+    public void onPause() {
         if (mRoundCountDownTimer != null) {
             mRoundCountDownTimer.cancel();
             mRoundCountDownTimer = null;
@@ -45,33 +65,36 @@ public class BellBoy {
         }
     }
 
-    public void resume() {
-        if (mHasStarted == false) {
-            throw new IllegalStateException("resume() can be called only after it has been paused.");
-        }
-        mHasStarted = true;
+    public boolean canBeResumed() {
+        return mBellBoyState.canBeResumed();
+    }
 
+    public void resume() {
+        mBellBoyState.resume();
+    }
+
+    public void onResume() {
         if (mCurrentRoundSecond != 0) {
-            mRoundCountDownTimer = buildRoundCountDownTimer(mCurrentRoundSecond);
+            mRoundCountDownTimer = buildRoundCountDownTimer(mConfiguration.getRoundDurationInSeconds() - mCurrentRoundSecond);
             mRoundCountDownTimer.start();
         } else if (mCurrentBreakSecond != 0) {
-            mBreakCountDownTimer = buildBreakCountDownTimer(mCurrentBreakSecond);
+            mBreakCountDownTimer = buildBreakCountDownTimer(mConfiguration.getBreakDurationInSeconds() - mCurrentBreakSecond);
             mBreakCountDownTimer.start();
         } else {
             System.out.println("resume() is called but both the mCurrentRoundSecond and mCurrentBreakSecond are zero.");
         }
     }
 
-    public boolean getHasStarted() {
-        return mHasStarted;
+    public boolean isRunning() {
+        return mBellBoyState instanceof RunningState;
+    }
+
+    public void setState(IBellBoyState bellBoyState) {
+        mPrevBellBoyState = mBellBoyState;
+        mBellBoyState = bellBoyState;
     }
 
     private CountDownTimer buildRoundCountDownTimer(int durationInSeconds) {
-        // Todo: We may need to lock before updating this variable as this gets called from BreakCountDownTimer's onFinish() method.
-        // We increment the round when it starts.
-        ++mCurrentRound;
-        mEvents.onStartRound(mCurrentRound);
-
         return new CountDownTimer(durationInSeconds * 1000 + COUNTDOWNTIMER_BUFFER, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -96,6 +119,7 @@ public class BellBoy {
                 }
                 else
                 {
+                    mEvents.onStartBreak();
                     mBreakCountDownTimer = buildBreakCountDownTimer(mConfiguration.getBreakDurationInSeconds());
                     mBreakCountDownTimer.start();
                 }
@@ -104,8 +128,6 @@ public class BellBoy {
     }
 
     private CountDownTimer buildBreakCountDownTimer(int durationInSeconds) {
-        mEvents.onStartBreak();
-
         return new CountDownTimer(durationInSeconds * 1000 + COUNTDOWNTIMER_BUFFER, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -117,6 +139,10 @@ public class BellBoy {
             @Override
             public void onFinish() {
                 mEvents.onEndBreak();
+
+                ++mCurrentRound;
+                mEvents.onStartRound(mCurrentRound);
+
                 mRoundCountDownTimer = buildRoundCountDownTimer(mConfiguration.getRoundDurationInSeconds());
                 mRoundCountDownTimer.start();
             }

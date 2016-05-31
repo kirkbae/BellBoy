@@ -6,5 +6,6 @@ package com.enomasoftware.roundgirl.BellBoy;
 public interface IBellBoyState {
     void start();
     void pause();
+    boolean canBeResumed();
     void resume();
 }

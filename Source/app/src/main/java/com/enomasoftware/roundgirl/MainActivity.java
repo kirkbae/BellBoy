@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.enomasoftware.roundgirl.BellBoy.BellBoy;
+import com.enomasoftware.roundgirl.BellBoy.PausedState;
+import com.enomasoftware.roundgirl.BellBoy.RunningState;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,13 +35,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btnStart_onClick(View view) {
-        if (mBellBoy.getHasStarted()) {
-            // Was playing. Pause button was displayed.
+        if (mBellBoy.isRunning()) {
+            // Is running. Pause button was displayed.
             mBellBoy.pause();
             setStartPauseButtonState(StartPauseButtonState.START);
         } else {
-            // Was paused. Start button was displayed.
-            mBellBoy.start();
+            // Is paused. Start button was displayed.
+            if (mBellBoy.canBeResumed()) {
+                mBellBoy.resume();
+            }
+            else {
+                // First time running.
+                mBellBoy.start();
+            }
             setStartPauseButtonState(StartPauseButtonState.PAUSE);
         }
     }
@@ -102,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onRoundTick(int secondsUntilFinished) {
-                updateTime(secondsUntilFinished);
+                updateTime(secondsUntilFinished - 1);
             }
 
             @Override
@@ -122,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onBreakTick(int secondsUntilFinished) {
-                updateTime(secondsUntilFinished);
+                updateTime(secondsUntilFinished - 1);
             }
 
             @Override
