@@ -1,0 +1,19 @@
+- Implement onPause.
+- Implement validation for time settings.
+- Implement buttons.
+- Implement 10 second break configuration.
+- When no minutes, there should be no tailing zeros.
+
+- Think about how it should count.
+	- if a round is 10 seconds, should we count from 10 to 1, or 9 to 0, or make it seem like we are counting from 10 to 0, but actually counting from 9 to 0? In boxing, they simply hide the counter. I don't think that's right.
+
+- Done: Implement 10 second sound.
+- Done: Boxing ring
+	- start: 1
+	- 10 seconds: clacker
+	- end: 3 rings
+
+	- break
+	- 10 seconds: whistle
+	- start: 1
+

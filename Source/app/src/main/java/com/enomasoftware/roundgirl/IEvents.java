@@ -14,6 +14,7 @@ public interface IEvents {
 
     void onStartBreak();
     void onBreakTick(int secondsUntilFinished);
+    void onNSecondsBeforeEndBreak(int currentSecond);
     void onEndBreak();
 
 }

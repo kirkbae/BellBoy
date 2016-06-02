@@ -2,6 +2,8 @@ package com.enomasoftware.roundgirl;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,8 +15,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.enomasoftware.roundgirl.BellBoy.BellBoy;
-import com.enomasoftware.roundgirl.BellBoy.PausedState;
-import com.enomasoftware.roundgirl.BellBoy.RunningState;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,6 +24,12 @@ public class MainActivity extends AppCompatActivity {
         START, PAUSE
     }
 
+    private MediaPlayer mStartBellPlayer = null;
+    private MediaPlayer mEndBellPlayer = null;
+    private MediaPlayer mRoundEndWarningSoundPlayer = null;
+    private MediaPlayer mBreakEndWarningSoundPlayer = null;
+
+
     private Configuration mConfiguration = null;
     private BellBoy mBellBoy = null;
     private IEvents mEventHandler = null;
@@ -32,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mStartBellPlayer = MediaPlayer.create(this, R.raw.one_bell);
+        mEndBellPlayer = MediaPlayer.create(this, R.raw.three_bells);
+        mRoundEndWarningSoundPlayer = MediaPlayer.create(this, R.raw.cracking);
+        mBreakEndWarningSoundPlayer = MediaPlayer.create(this, R.raw.whistle);
 
         mConfiguration = buildConfiguration();
         mEventHandler = buildEventHandler();
@@ -57,6 +68,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        mStartBellPlayer.stop();
+        mEndBellPlayer.stop();
+        mRoundEndWarningSoundPlayer.stop();
+        mBreakEndWarningSoundPlayer.stop();
+
+        // Todo: Destroy timers.
+        super.onDestroy();
+    }
+
     public void btnStart_onClick(View view) {
         if (mBellBoy.isRunning()) {
             // Is running. Pause button was displayed.
@@ -75,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateText(String text) {
-        TextView textView = (TextView) this.findViewById(R.id.txtMain);
+    private void updateRound(String text) {
+        TextView textView = (TextView) this.findViewById(R.id.txtRound);
         textView.setText(text.toString());
     }
 
@@ -86,7 +108,8 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
         String formattedDate = dateFormat.format(date);
 
-        updateText(formattedDate);
+        TextView textView = (TextView) this.findViewById(R.id.txtTime);
+        textView.setText(formattedDate.toString());
     }
 
     private void setStartPauseButtonState(StartPauseButtonState state) {
@@ -128,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStartRound(int currentRound) {
-                updateText("Round " + currentRound);
+                updateRound("Round " + currentRound);
+                mStartBellPlayer.start();
             }
 
             @Override
@@ -139,16 +163,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onNSecondsBeforeEndRound(int currentSecond) {
                 System.out.println("NSecondsBeforeEndRound called. Current second is " + currentSecond + ".");
+                mRoundEndWarningSoundPlayer.start();
             }
 
             @Override
             public void onEndRound(int currentRound) {
-
+                mEndBellPlayer.start();
             }
 
             @Override
             public void onStartBreak() {
-                updateText("Break");
+                updateRound("Break");
             }
 
             @Override
@@ -157,8 +182,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onEndBreak() {
+            public void onNSecondsBeforeEndBreak(int currentSecond) {
+                mBreakEndWarningSoundPlayer.start();
+            }
 
+            @Override
+            public void onEndBreak() {
             }
         };
     }

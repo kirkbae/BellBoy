@@ -132,9 +132,13 @@ public class BellBoy {
             @Override
             public void onTick(long millisUntilFinished) {
                 int secondsUntilFinished = (int)Math.ceil(millisUntilFinished / 1000);
+                mEvents.onBreakTick(secondsUntilFinished);
                 mCurrentBreakSecond = mConfiguration.getBreakDurationInSeconds() - secondsUntilFinished;
 
-                mEvents.onBreakTick(secondsUntilFinished);
+                // Todo: Use break specific warning time.
+                if (secondsUntilFinished == mConfiguration.getNSecondsBeforeRoundEnd()) {
+                    mEvents.onNSecondsBeforeEndBreak(mCurrentBreakSecond);
+                }
             }
             @Override
             public void onFinish() {
