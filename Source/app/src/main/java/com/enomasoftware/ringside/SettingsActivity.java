@@ -1,4 +1,4 @@
-package com.enomasoftware.roundgirl;
+package com.enomasoftware.ringside;
 
 
 import android.annotation.TargetApi;

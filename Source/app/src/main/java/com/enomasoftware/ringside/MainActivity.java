@@ -1,9 +1,8 @@
-package com.enomasoftware.roundgirl;
+package com.enomasoftware.ringside;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
-import android.media.SoundPool;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.enomasoftware.roundgirl.BellBoy.BellBoy;
+import com.enomasoftware.ringside.BellBoy.BellBoy;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -151,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStartRound(int currentRound) {
-                updateRound("Round " + currentRound);
+                updateRound("Round " + currentRound + " of " + mConfiguration.getNumRounds());
                 mStartBellPlayer.start();
             }
 

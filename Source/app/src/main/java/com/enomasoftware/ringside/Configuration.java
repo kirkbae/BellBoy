@@ -1,4 +1,4 @@
-package com.enomasoftware.roundgirl;
+package com.enomasoftware.ringside;
 
 /**
  * Created by kirk on 20/05/16.

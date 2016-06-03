@@ -1,4 +1,4 @@
-package com.enomasoftware.roundgirl.BellBoy;
+package com.enomasoftware.ringside.BellBoy;
 
 /**
  * Created by kirk on 28/05/16.

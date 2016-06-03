@@ -1,9 +1,9 @@
-package com.enomasoftware.roundgirl.BellBoy;
+package com.enomasoftware.ringside.BellBoy;
 
 import android.os.CountDownTimer;
 
-import com.enomasoftware.roundgirl.Configuration;
-import com.enomasoftware.roundgirl.IEvents;
+import com.enomasoftware.ringside.Configuration;
+import com.enomasoftware.ringside.IEvents;
 
 /**
  * Created by kirk on 20/05/16.
