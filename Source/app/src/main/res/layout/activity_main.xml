@@ -20,11 +20,12 @@
         android:text="Round"
         android:background="@color/colorRoundBackGround"
         android:textColor="@color/colorRoundText"
-        android:layout_above="@+id/txtTime"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_marginTop="162dp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -32,8 +33,9 @@
         android:text="Start"
         android:id="@+id/btnStartPause"
         android:onClick="btnStartPause_onClick"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/txtTime"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,11 +46,10 @@
         android:text="00:00"
         android:textColor="@color/colorTimeText"
         android:background="@color/colorTimeBackGround"
-        android:layout_above="@+id/btnStartPause"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/txtRound"
-        android:layout_alignEnd="@+id/txtRound"
-        android:layout_alignParentRight="true" />
+        android:layout_below="@+id/txtRound"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
