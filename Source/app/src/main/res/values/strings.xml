@@ -2,6 +2,7 @@
     <string name="app_name">Ringside Bell</string>
     <string name="title_activity_settings">Settings</string>
 
+    <string name="menu_reset">Reset timer</string>
     <string name="menu_settings">Settings</string>
 
     <!-- Strings related to Settings -->
@@ -17,6 +18,12 @@
     <string name="pref_description_round_duration">Round duration</string>
     <string name="pref_default_round_duration">180</string>
 
+    <string name="pref_description_round_end_warning">Sound a warning N seconds before round end</string>
+    <string name="pref_default_round_end_warning">10</string>
+
     <string name="pref_description_break_duration">Break duration</string>
     <string name="pref_default_break_duration">60</string>
+
+    <string name="pref_description_break_end_warning">Sound a warning N seconds before break end</string>
+    <string name="pref_default_break_end_warning">10</string>
 </resources>

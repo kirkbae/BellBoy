@@ -55,6 +55,10 @@ public class BellBoy {
     }
 
     public void onPause() {
+        resetCountDownTimers();
+    }
+
+    private void resetCountDownTimers() {
         if (mRoundCountDownTimer != null) {
             mRoundCountDownTimer.cancel();
             mRoundCountDownTimer = null;
@@ -87,6 +91,18 @@ public class BellBoy {
 
     public boolean isRunning() {
         return mBellBoyState instanceof RunningState;
+    }
+
+    public void reset() {
+        mBellBoyState.reset();
+    }
+
+    public void onReset() {
+        mCurrentRound = 0;
+        mCurrentRoundSecond = 0;
+        mCurrentBreakSecond = 0;
+        mPrevBellBoyState = null;
+        resetCountDownTimers();
     }
 
     public void setState(IBellBoyState bellBoyState) {

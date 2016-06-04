@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         mConfiguration = buildConfiguration();
         mEventHandler = buildEventHandler();
         mBellBoy = buildBellBoy(mConfiguration, mEventHandler);
+
+        init(mConfiguration, mBellBoy);
     }
 
     @Override
@@ -61,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
+                return true;
+            case R.id.reset_timer:
+                resetTimer();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -78,11 +83,10 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public void btnStart_onClick(View view) {
+    public void btnStartPause_onClick(View view) {
         if (mBellBoy.isRunning()) {
             // Is running. Pause button was displayed.
             mBellBoy.pause();
-            setStartPauseButtonState(StartPauseButtonState.START);
         } else {
             // Is paused. Start button was displayed.
             if (mBellBoy.canBeResumed()) {
@@ -92,8 +96,9 @@ public class MainActivity extends AppCompatActivity {
                 // First time running.
                 mBellBoy.start();
             }
-            setStartPauseButtonState(StartPauseButtonState.PAUSE);
         }
+
+        setStartPauseButtonState(mBellBoy.isRunning() ?  StartPauseButtonState.PAUSE : StartPauseButtonState.START);
     }
 
     private void updateRound(String text) {
@@ -112,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setStartPauseButtonState(StartPauseButtonState state) {
-        Button button = (Button) this.findViewById(R.id.btnStart);
+        Button button = (Button) this.findViewById(R.id.btnStartPause);
         if (state == StartPauseButtonState.START) {
             button.setText("Start");
         }
@@ -124,17 +129,37 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void resetTimer() {
+        mBellBoy.reset();
+        init(mConfiguration, mBellBoy);
+    }
+
+    private void init(Configuration configuration, BellBoy bellBoy) {
+        updateRound("Round 1 of " + configuration.getNumRounds());
+        updateTime(configuration.getRoundDurationInSeconds());
+
+        setStartPauseButtonState(bellBoy.isRunning() ?  StartPauseButtonState.PAUSE : StartPauseButtonState.START);
+    }
+
     private Configuration buildConfiguration() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         String numRoundsStr = sharedPref.getString("num_rounds", "12");
         int numRounds = Integer.parseInt(numRoundsStr);
+
         String roundDurationStr = sharedPref.getString("round_duration", "180");
         int roundDuration = Integer.parseInt(roundDurationStr);
-        String breakDurtaionStr = sharedPref.getString("break_duration", "60");
-        int breakDurtaion = Integer.parseInt(breakDurtaionStr);
 
-        return new Configuration(numRounds, roundDuration, 10, breakDurtaion);
+        String nSecondsBeforeRoundEndStr = sharedPref.getString("round_end_warning", "10");
+        int nSecondsBeforeRoundEnd = Integer.parseInt(nSecondsBeforeRoundEndStr);
+
+        String breakDurationStr = sharedPref.getString("break_duration", "60");
+        int breakDuration = Integer.parseInt(breakDurationStr);
+
+        String nSecondsBeforeBreakEndStr = sharedPref.getString("break_end_warning", "10");
+        int nSecondsBeforeBreakEnd = Integer.parseInt(nSecondsBeforeBreakEndStr);
+
+        return new Configuration(numRounds, roundDuration, nSecondsBeforeRoundEnd, breakDuration, nSecondsBeforeBreakEnd);
     }
 
     private IEvents buildEventHandler() {

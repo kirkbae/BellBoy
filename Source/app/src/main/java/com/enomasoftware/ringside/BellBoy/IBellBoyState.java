@@ -8,4 +8,5 @@ public interface IBellBoyState {
     void pause();
     boolean canBeResumed();
     void resume();
+    void reset();
 }

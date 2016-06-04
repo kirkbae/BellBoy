@@ -30,4 +30,11 @@ public class RunningState implements IBellBoyState {
     public void resume() {
         throw new IllegalStateException("pause() must be called first in order to resume.");
     }
+
+    @Override
+    public void reset() {
+        mBellBoy.setState(new PausedState(mBellBoy));
+        // Todo: a bit of hack. onReset must be called after setState because we set prevState to null.
+        mBellBoy.onReset();
+    }
 }

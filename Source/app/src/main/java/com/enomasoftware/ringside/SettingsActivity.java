@@ -4,6 +4,7 @@ package com.enomasoftware.ringside;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 
 /**
@@ -35,6 +37,54 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
+
+            //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
+            SharedPreferences sharedPref = preference.getSharedPreferences();
+            String numRoundsStr = sharedPref.getString("num_rounds", "12");
+            int numRounds = Integer.parseInt(numRoundsStr);
+            String roundDurationStr = sharedPref.getString("round_duration", "180");
+            int roundDuration = Integer.parseInt(roundDurationStr);
+            String breakDurationStr = sharedPref.getString("break_duration", "60");
+            int breakDuration = Integer.parseInt(breakDurationStr);
+
+            String validationMessage = "";
+            switch (preference.getKey()) {
+                case "num_rounds":
+                    if (Integer.parseInt(stringValue) < 1) {
+                        validationMessage = "Number of rounds must be at least 1.";
+                    }
+                    break;
+
+                case "round_duration":
+                    if (Integer.parseInt(stringValue) < 10) {
+                        validationMessage = "Round duration must be at least 10 seconds.";
+                    }
+                    break;
+                case "round_end_warning":
+                    if (Integer.parseInt(stringValue) >= roundDuration) {
+                        validationMessage = "This value must be less than the round duration.";
+                    }
+                    break;
+                case "break_duration":
+                        if (Integer.parseInt(stringValue) < 10) {
+                        validationMessage = "Break duration must be at least 10 seconds.";
+                    }
+                    break;
+                case "break_end_warning":
+                    if (Integer.parseInt(stringValue) >= breakDuration) {
+                        validationMessage = "This value must be less than the break duration.";
+                    }
+                    break;
+            }
+
+            if (validationMessage.isEmpty() == false) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(preference.getContext());
+                builder.setTitle("Invalid Input");
+                builder.setMessage(validationMessage);
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.show();
+                return false;
+            }
 
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
@@ -115,23 +165,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
-        if (preference.getKey() == "num_rounds") {
-            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                    PreferenceManager
-                            .getDefaultSharedPreferences(preference.getContext())
-                            .getInt(preference.getKey(), 0));
-        }
-
-        else {
-            // Trigger tqhe listener immediately with the preference's
-            // current value.
-            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                    PreferenceManager
-                            .getDefaultSharedPreferences(preference.getContext())
-                            .getString(preference.getKey(), ""));
-
-
-        }
+        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+                PreferenceManager
+                        .getDefaultSharedPreferences(preference.getContext())
+                        .getString(preference.getKey(), ""));
     }
 
     @Override
@@ -197,7 +234,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("num_rounds"));
             bindPreferenceSummaryToValue(findPreference("round_duration"));
+            bindPreferenceSummaryToValue(findPreference("round_end_warning"));
             bindPreferenceSummaryToValue(findPreference("break_duration"));
+            bindPreferenceSummaryToValue(findPreference("break_end_warning"));
         }
 
         @Override

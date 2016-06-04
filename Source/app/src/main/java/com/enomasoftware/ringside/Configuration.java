@@ -7,8 +7,9 @@ public class Configuration
 {
     private int mNumRounds = 12;
     private int mRoundDurationInSeconds = 180;
-    private int mBreakDurationInSeconds = 60;
     private int mNSecondsBeforeRoundEnd = 10;
+    private int mBreakDurationInSeconds = 60;
+    private int mNSecondsBeforeBreakEnd = 10;
 
     public int getNumRounds(){
         return mNumRounds;
@@ -26,13 +27,19 @@ public class Configuration
         return mBreakDurationInSeconds;
     }
 
+    public int getNSecondsBeforeBreakEnd(){
+        return mNSecondsBeforeBreakEnd;
+    }
+
     public Configuration(int numRounds,
                          int roundDurationInSeconds,
                          int nSecondsBeforeRoundEnd,
-                         int breakDurationInSeconds) {
+                         int breakDurationInSeconds,
+                         int nSecondsBeforeBreakEnd) {
         mNumRounds = numRounds;
         mRoundDurationInSeconds = roundDurationInSeconds;
         mNSecondsBeforeRoundEnd = nSecondsBeforeRoundEnd;
         mBreakDurationInSeconds = breakDurationInSeconds;
+        mNSecondsBeforeBreakEnd = nSecondsBeforeBreakEnd;
     }
 }

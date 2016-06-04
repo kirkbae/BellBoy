@@ -31,4 +31,9 @@ public class PausedState implements IBellBoyState {
         mBellBoy.onResume();
         mBellBoy.setState(new RunningState(mBellBoy));
     }
+
+    @Override
+    public void reset() {
+        mBellBoy.onReset();
+    }
 }

@@ -1,11 +1,4 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="example_switch"
-        android:summary="@string/pref_description_recording"
-        android:title="@string/pref_title_recording" />
-
     <EditTextPreference
         android:defaultValue="@string/pref_default_num_rounds"
         android:inputType="number"
@@ -25,6 +18,15 @@
         android:title="@string/pref_description_round_duration" />
 
     <EditTextPreference
+        android:defaultValue="@string/pref_default_round_end_warning"
+        android:inputType="number"
+        android:key="round_end_warning"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_description_round_end_warning" />
+
+    <EditTextPreference
         android:defaultValue="@string/pref_default_break_duration"
         android:inputType="number"
         android:key="break_duration"
@@ -33,6 +35,14 @@
         android:singleLine="true"
         android:title="@string/pref_description_break_duration" />
 
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_break_end_warning"
+        android:inputType="number"
+        android:key="break_end_warning"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_description_break_end_warning" />
 
     <!-- NOTE: EditTextPreference accepts EditText attributes.
     <ListPreference
