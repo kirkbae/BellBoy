@@ -79,7 +79,9 @@ public class MainActivity extends AppCompatActivity {
         mRoundEndWarningSoundPlayer.stop();
         mBreakEndWarningSoundPlayer.stop();
 
-        // Todo: Destroy timers.
+        // Destroy timers.
+        mBellBoy.reset();
+
         super.onDestroy();
     }
 
