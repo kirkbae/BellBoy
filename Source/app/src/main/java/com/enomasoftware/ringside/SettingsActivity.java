@@ -1,6 +1,5 @@
 package com.enomasoftware.ringside;
 
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +15,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
+
+import java.util.List;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -38,12 +39,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
 
-            //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
             SharedPreferences sharedPref = preference.getSharedPreferences();
-            String numRoundsStr = sharedPref.getString("num_rounds", "12");
-            int numRounds = Integer.parseInt(numRoundsStr);
             String roundDurationStr = sharedPref.getString("round_duration", "180");
             int roundDuration = Integer.parseInt(roundDurationStr);
+
             String breakDurationStr = sharedPref.getString("break_duration", "60");
             int breakDuration = Integer.parseInt(breakDurationStr);
 
@@ -173,8 +172,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         getIntent().putExtra(EXTRA_SHOW_FRAGMENT, GeneralPreferenceFragment.class.getName());
-
         super.onCreate(savedInstanceState);
         setupActionBar();
     }
@@ -200,12 +199,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     /**
      * {@inheritDoc}
+     */
     @Override
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.pref_headers, target);
     }
-    */
 
     /**
      * This method stops fragment injection in malicious applications.

@@ -9,9 +9,6 @@
     <!-- General settings -->
     <string name="pref_header_general">General</string>
 
-    <string name="pref_title_recording">Enable video recording</string>
-    <string name="pref_description_recording">Enables video recording during rounds.</string>
-
     <string name="pref_description_num_rounds">Number of rounds</string>
     <string name="pref_default_num_rounds">12</string>
 
